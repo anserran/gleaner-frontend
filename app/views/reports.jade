@@ -1,0 +1,16 @@
+doctype html
+html(lang="en", ng-app="reportsApp", ng-controller="GleanerCtrl")
+        include header
+        link(rel="stylesheet", href="/css/reports.css")
+    body(ng-controller="ReportsCtrl")
+        include navbar
+        .row
+            .col-sm-offset-1.col-sm-10 {{ selectedGame.title }} - {{ selectedVersion.name }}
+        .row
+            .col-sm-offset-1.col-sm-10
+                span.btn.btn-primary#relaunch-analysis Relaunch analysis
+        .row
+            #variables.col-sm-10
+        include scripts
+        script(type="text/javascript", src="https://www.google.com/jsapi")
+        script(src="/js/controllers/reports.js")

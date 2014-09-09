@@ -1,0 +1,33 @@
+nav.navbar.navbar-default(role="navigation")
+	.container-fluid
+		.navbar-header
+			button.navbar-toggle(type="button",data-toggle="collapse", data-target="#main-navbar")
+				span.sr-only Toggle navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			img.navbar-brand(src="/images/logo.png")
+			a.navbar-brand(href="/app?game={{selectedGame._id}}&version={{selectedVersion._id}}") Gleaner
+		.collapse.navbar-collapse#main-navbar
+			ul.nav.navbar-nav
+				li
+					a(href="/app?game={{selectedGame._id}}&version={{selectedVersion._id}}") Home
+				li
+					a(href="/app/data?game={{selectedGame._id}}&version={{selectedVersion._id}}") Data
+				li
+					a(href="/app/realtime?game={{selectedGame._id}}&version={{selectedVersion._id}}") Real time
+				li
+					a(href="/app/reports?game={{selectedGame._id}}&version={{selectedVersion._id}}") Reports
+				li
+					a(href="/app/activity") Activiy Report
+				li
+					a(href="/app/admin") Administrator
+			form.navbar-form.navbar-right
+				.form-group
+					select.form-control.right10(ng-model="form.selectedGame" ng-options="game as game.title for game in games")
+					select.form-control.right10(ng-model="form.selectedVersion" ng-options="version.name for version in versions") {{ version.name }}
+					button.form-control.dropdown-toggle(data-toggle="dropdown")
+						span.glyphicon.glyphicon-user
+					ul.dropdown-menu(role="menu")
+						li
+							a(href="/logout") Log out

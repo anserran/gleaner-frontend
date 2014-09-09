@@ -1,0 +1,17 @@
+{
+    "name": "gleaner-frontend",
+    "version": "0.0.1",
+    "dependencies": {
+        "angular": "1.2.x",
+        "angular-resource": "1.2.x",
+        "angular-mocks": "~1.2.x",
+        "angular-xeditable": "*",
+        "checklist-model": "*",
+        "bootstrap": "*",
+        "jquery": "*",
+        "jquery-dateFormat": "*",
+        "jquery-file-upload": "*",
+        "underscore": "http://underscorejs.org/underscore.js",
+        "d3": "*"
+    }
+}

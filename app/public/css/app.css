@@ -1,0 +1,55 @@
+@import url(http://fonts.googleapis.com/css?family=Coming+Soon);
+
+a.navbar-brand {
+	font-family: 'Coming Soon', cursive;
+}
+
+.title {
+	font-size: 30px;
+	height: 50px;
+}
+
+.editable {
+	border: none;
+}
+
+.right10 {
+	margin-right: 10px;
+}
+
+.left10 {
+	margin-left: 10px;
+}
+
+.top10 {
+	margin-top: 10px;
+}
+
+.bottom10 {
+	margin-bottom: 10px;
+}
+
+.right50 {
+	margin-right: 50px;
+}
+
+.left50 {
+	margin-left: 50px;
+}
+
+.top50 {
+	margin-top: 50px;
+}
+
+.bottom50 {
+	margin-bottom: 50px;
+}
+
+
+.pad15 {
+	padding: 15px;
+}
+
+.loading {
+	display: none;
+}

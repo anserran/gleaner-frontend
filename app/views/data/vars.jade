@@ -1,0 +1,30 @@
+.row.top10
+	.col-sm-12
+		h4 Variables emitted by the game
+.row.top10
+	.col-sm-6
+		span(data-toggle="tooltip" data-placement="left" title="Flags variables emitted by the game").glyphicon.glyphicon-flag
+		|  Flags
+		p
+			span(ng-repeat="flag in selectedVersion.flags")  {{ flag }},
+	.col-sm-6
+		span.glyphicon.glyphicon-stats
+		|  Variables
+		p
+			span(ng-repeat="var in selectedVersion.vars")  {{ var }},
+.row.top10
+	.col-sm-12
+		h4 Derived variables
+.row.top10(ng-if="selectedVersion && selectedVersion.derivedVars")
+	.col-sm-12
+		ul
+			li(ng-repeat="variable in selectedVersion.derivedVars")
+				a(href="#",editable-text="variable.name" onbeforesave="saveVersion()") {{ variable.name }}
+				|  = 
+				a(href="#",editable-text="variable.value" onbeforesave="saveVersion()") {{ variable.value }}
+				span.left10 Aggregations: 
+				a(href="#" editable-checklist="variable.aggregations" e-ng-options="s for s in ['boxplot']" onbeforesave="saveVersion()") {{ variable.aggregations | list }}
+				button.left10.btn.btn-xs.btn-default(ng-click="deleteDerivedVar(variable)") Delete
+.row.top10
+	.col-sm-12
+		button.btn.btn-default.btn-sm(ng-click="addDerivedVar()") Add

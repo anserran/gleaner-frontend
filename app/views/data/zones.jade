@@ -1,0 +1,10 @@
+.row.top10
+	.col-sm-12
+		p Completed zone: 
+			a(href="#" editable-select="selectedVersion.completedZone" e-ng-options="name for name in zoneNames" onbeforesave="saveVersion()") {{ selectedVersion.completedZone || 'Not selected.' }}
+		p Initiated zone: 
+			a(href="#" editable-select="selectedVersion.initiatedZone" e-ng-options="name for name in zoneNames" onbeforesave="saveVersion()") {{ selectedVersion.initiatedZone || 'Not selected.' }}
+.row.top10
+	.col-sm-12
+		a(href="#" editable-textarea="editedZones" e-rows="7" e-cols="40" onbeforesave="updateZones($data)")
+			div.zonegraph-container#zones-graph

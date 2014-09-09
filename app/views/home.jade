@@ -1,0 +1,22 @@
+doctype html
+html(lang="en", ng-app="homeApp", ng-controller="GleanerCtrl")
+        include header
+    body(ng-controller="HomeCtrl")
+        include navbar
+        .row
+            .col-md-offset-1.col-md-10
+               a.btn.btn-primary(type="button", ng-click="createGame()") Add game
+        .row
+            .col-md-offset-1.col-md-10
+                table.table
+                    thead
+                        tr
+                            th
+                            th Created                            
+                    tbody
+                        tr(ng-repeat="game in games")
+                            td 
+                                a(ng-href="app/data?game={{game._id}}") {{game.title}}
+                            td {{game._id | prettyDate }}
+        include scripts
+        script(src="js/controllers/home.js")
