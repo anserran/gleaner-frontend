@@ -25,9 +25,14 @@ nav.navbar.navbar-default(role="navigation")
 			form.navbar-form.navbar-right
 				.form-group
 					select.form-control.right10(ng-model="form.selectedGame" ng-options="game as game.title for game in games")
-					select.form-control.right10(ng-model="form.selectedVersion" ng-options="version.name for version in versions") {{ version.name }}
+					select.form-control.right10(ng-if="selectedVersion" ng-model="form.selectedVersion" ng-options="version.name for version in versions") {{ version.name }}
 					button.form-control.dropdown-toggle(data-toggle="dropdown")
 						span.glyphicon.glyphicon-user
 					ul.dropdown-menu(role="menu")
 						li
 							a(href="/logout") Log out
+.container-fluid(ng-if="loading")
+	.row
+		.col-xs-12.text-center.top50
+			| Loading 
+			img.left10(src="/images/ajax-loader.gif")

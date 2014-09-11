@@ -17,8 +17,10 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
                 return result;
             }
         };
-    }).controller('GleanerCtrl', ['$scope', '$location', '$params', 'Games', 'Versions',
-        function($scope, $location, $params, Games, Versions) {
+    }).controller('GleanerCtrl', ['$scope', '$params', 'Games', 'Versions',
+        function($scope, $params, Games, Versions) {
+            $scope.loading = 0;
+
             $scope.games = Games.query(function() {
                 var gameId = $params.game;
                 if (gameId) {
@@ -33,11 +35,14 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
                     $scope.selectedGame = $scope.games[0];
                 }
                 $scope.refreshVersions();
+                $scope.loading--;
             });
+            $scope.loading++;
 
             $scope.refreshVersions = function(callback) {
                 if ($scope.selectedGame) {
                     $scope.form.selectedGame = $scope.selectedGame;
+                    $scope.loading++;
                     $scope.versions = Versions.query({
                         gameId: $scope.selectedGame._id
                     }, function() {
@@ -60,6 +65,7 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
                         if (callback) {
                             callback();
                         }
+                        $scope.loading--;
                     });
                 }
             };
@@ -73,14 +79,12 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
                 if (selected) {
                     $scope.selectedGame = selected;
                     $scope.refreshVersions();
-                    $location.search('game', $scope.selectedGame._id);
                 }
             });
 
             $scope.$watch('form.selectedVersion', function(selected) {
                 if (selected) {
                     $scope.selectedVersion = selected;
-                    $location.search('version', $scope.selectedVersion._id);
                 }
             });
         }

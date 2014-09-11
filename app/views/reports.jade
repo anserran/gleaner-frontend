@@ -1,16 +1,33 @@
 doctype html
 html(lang="en", ng-app="reportsApp", ng-controller="GleanerCtrl")
         include header
+        link(rel="stylesheet", href="/bower/gridstercss/index.css")
         link(rel="stylesheet", href="/css/reports.css")
     body(ng-controller="ReportsCtrl")
         include navbar
-        .row
-            .col-sm-offset-1.col-sm-10 {{ selectedGame.title }} - {{ selectedVersion.name }}
-        .row
-            .col-sm-offset-1.col-sm-10
-                span.btn.btn-primary#relaunch-analysis Relaunch analysis
-        .row
-            #variables.col-sm-10
+        .container-fluid
+            .row
+                .col-xs-2
+                    span.btn.btn-primary#relaunch-analysis Relaunch analysis
+                    a.left10.add-panel(href="#" ng-click="addPanel()")
+                                span.glyphicon.glyphicon-plus
+                    ul#panel-list.list-group
+                        li#panel-link.list-group-item.hidden
+                            span.glyphicon.glyphicon-chevron-right.right10
+                            a(href="#")
+                .col-xs-10
+                    .container-fluid
+                        .row
+                            .col-xs-12
+                                - var modalId = 'createReportModal'
+                                button.btn.btn-default(data-toggle="modal", data-target="#" + modalId) Add report
+                                include modals/createreport
+                    .container-fluid
+                        .row
+                            .col-xs-12.top50.gridster
+                                ul#reports
         include scripts
         script(type="text/javascript", src="https://www.google.com/jsapi")
+        script(src="/bower/gridster/index.js")
         script(src="/js/controllers/reports.js")
+        script(src="/js/reports/simple.js")

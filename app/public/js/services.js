@@ -17,6 +17,15 @@ gleanerServices.factory('Versions', ['$resource',
     }
 ]);
 
+gleanerServices.factory('Result', ['$resource',
+    function($resource) {
+        return $resource('/api/games/:gameId/versions/:versionId/results', {
+            versionId: '@_id',
+            gameId: '@gameId'
+        });
+    }
+]);
+
 gleanerServices.factory('$params', ['$window',
     function($window) {
         return _.object(_.compact(_.map($window.location.search.slice(1).split('&'), function(item) {

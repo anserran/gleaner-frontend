@@ -1,0 +1,34 @@
+.row
+	.col-md-12
+		ul.actions.nav.nav-pills
+			li
+				a(href="#", ng-click="addEmptyVersion()") New version
+					span.glyphicon.glyphicon-plus.left10
+			li
+				- var dangerModal = 'deleteGame'
+				- var dangerMessage = 'You will delete all this game data, including: versions, reports and traces collected. You won\'t be able to recover them. Are you sure?'
+				- var dangerOk = 'Delete'
+				- var dangerAction = 'deleteGame()'
+				a(href="#", data-toggle="modal", data-target="#" + dangerModal) Delete game
+				include ../modals/dangermodal
+			li(ng-show="selectedVersion")
+				span.nav-span Version:
+			li(ng-show="selectedVersion && versions.length === 1")
+				span.nav-span {{ selectedVersion.name }}
+			li(ng-show="selectedVersion && versions.length > 1")
+				a.dropdown-toggle(href="#", data-toggle="dropdown") {{ selectedVersion.name }}
+					span.caret
+				ul.dropdown-menu(role="menu")
+					li(ng-repeat="version in versions")
+						a(href="#" ng-click="setSelectedVersion(version)") {{ version.name }}
+			li(ng-show="selectedVersion")
+				a.fileinput-button(href="#") Load data from *.ead
+					input#fileupload(type="file" name="files" data-url="/app/upload/")
+			li(ng-show="selectedVersion")
+				- var dangerModal = 'deleteVersion'
+				- var dangerMessage = 'You will delete this version of the game, and all its data and reports, and you will not be able to recover them'
+				- var dangerOk = 'Delete'
+				- var dangerAction = 'deleteVersion()'
+				- var dangerDismiss = true
+				a(href="#", data-toggle="modal", data-target="#" + dangerModal) Delete version
+				include ../modals/dangermodal

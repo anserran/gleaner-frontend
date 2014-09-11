@@ -22,8 +22,6 @@
 				a(href="#",editable-text="variable.name" onbeforesave="saveVersion()") {{ variable.name }}
 				|  = 
 				a(href="#",editable-text="variable.value" onbeforesave="saveVersion()") {{ variable.value }}
-				span.left10 Aggregations: 
-				a(href="#" editable-checklist="variable.aggregations" e-ng-options="s for s in ['boxplot']" onbeforesave="saveVersion()") {{ variable.aggregations | list }}
 				button.left10.btn.btn-xs.btn-default(ng-click="deleteDerivedVar(variable)") Delete
 .row.top10
 	.col-sm-12

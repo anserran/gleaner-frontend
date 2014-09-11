@@ -29,6 +29,10 @@ var options = {
     redirectLogin: '/app'
 };
 
+/*app.all('*', function(req, res, next) {
+    setTimeout(next, 500);
+});*/
+
 app.get('/', function(req, res) {
     res.redirect(options.redirectLogin);
 });

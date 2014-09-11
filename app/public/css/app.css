@@ -1,12 +1,64 @@
 @import url(http://fonts.googleapis.com/css?family=Coming+Soon);
 
+html, body {
+	height:100vh;
+}
+
 a.navbar-brand {
 	font-family: 'Coming Soon', cursive;
 }
 
-.title {
-	font-size: 30px;
-	height: 50px;
+a.title {
+	font-size: 2em;
+	border-bottom-style: hidden;
+	color: black;
+}
+
+a.title:hover {
+	border-bottom-style: dashed;
+}
+
+.actions {
+	background-color: #f8f8f8;
+	border: 1px solid #e7e7e7;
+}
+
+.actions a, .actions span.nav-span {
+	font-size: 0.9em;
+	color: black;
+	border-right: 1px solid #e7e7e7;
+	display: block;
+}
+
+.actions span.nav-span {
+	padding: 10px 15px;
+	border-right: none;
+}
+
+.left-menu {
+	padding-left: 0px;
+}
+
+.left-menu ul.nav {
+	background-color: #f8f8f8;
+	border-right: 1px solid #e7e7e7;
+	height: 75vh;
+}
+
+.left-menu ul.nav a {
+	color: #707070;
+}
+
+.left-menu ul.nav li {
+	padding-bottom: 10px;
+}
+
+.left-menu ul.nav li.active {
+	font-weight: bold;
+}
+
+.left-menu ul.nav li.active a {
+	color: #606060;
 }
 
 .editable {
@@ -27,6 +79,22 @@ a.navbar-brand {
 
 .bottom10 {
 	margin-bottom: 10px;
+}
+
+.right20 {
+	margin-right: 20px;
+}
+
+.left20 {
+	margin-left: 20px;
+}
+
+.top20 {
+	margin-top: 20px;
+}
+
+.bottom20 {
+	margin-bottom: 20px;
 }
 
 .right50 {
@@ -52,4 +120,8 @@ a.navbar-brand {
 
 .loading {
 	display: none;
+}
+
+#reports li {
+	box-shadow: 1px 1px 1px 0px rgba(50, 50, 50, 0.75);
 }

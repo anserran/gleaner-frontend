@@ -7,64 +7,31 @@ html(lang="en", ng-app="dataApp", ng-controller="GleanerCtrl")
     body(ng-controller="GameCtrl")
         include navbar
         .row.bottom10
-            .col-md-offset-1.col-md-10
-                a.title(href="#", editable-text="selectedGame.title" onbeforesave="saveGame()") {{ selectedGame.title }}
-        .row.bottom10
-            .col-md-offset-1.col-md-10
-                button.right10.btn.btn-primary(ng-click="addEmptyVersion()") Add empty version
+            .col-md-12
+                a.left10.title(href="#", editable-text="selectedGame.title" onbeforesave="saveGame()") {{ selectedGame.title }}
+        include data/actions
         .row
-            .col-md-offset-1.col-md-10
-                .p(ng-show="selectedVersion === undefined")
-                    | No versions yet.
-                #data.panel.panel-default(ng-show="selectedVersion !== undefined")
-                    .panel-heading
-                        a(href="#", editable-text="selectedVersion.name" onbeforesave="saveVersion()") {{ selectedVersion.name }}
-                        small
-                            em.left10 version created {{ selectedVersion._id | prettyDate }}
-                    .panel-body.not-loading
-                        p Tracking code:
-                            kbd {{ selectedVersion.trackingCode }}
-                        ul.nav.nav-tabs(role="tablist")
-                            li.active
-                                a(href="#zones", role="tab", data-toggle="tab") Zones
-                            li
-                                a(href="#vars", role="tab", data-toggle="tab") Variables
-                            li
-                                a(href="#choices", role="tab", data-toggle="tab") Choices
-                        .tab-content
-                            #zones.tab-pane.active
-                                include data/zones
-                            #vars.tab-pane
-                                include data/vars
-                            #choices.tab-pane
-                                include data/choices
-                    .panel-footer.loading
-                        img.right10(src="/images/ajax-loader.gif")
-                        span#analysis-state
-                    .panel-footer.not-loading
-                        span.btn.btn-default.fileinput-button.right10
-                            i.icon-plus.icon-white
-                            span Load data from *.ead
-                            input#fileupload(type="file" name="files" data-url="/app/upload/")
-                        - var dangerModal = 'deleteVersion'
-                        - var dangerMessage = 'You will delete this version of the game, and all its data and reports, and you will not be able to recover them'
-                        - var dangerOk = 'Delete'
-                        - var dangerAction = 'deleteVersion()'
-                        - var dangerDismiss = true
-                        button.btn.btn-danger(data-toggle="modal", data-target="#" + dangerModal) Delete version
-                        include modals/dangermodal
-        .row.bottom10(ng-if="selectedVersion")
-            .col-md-offset-1.col-md-10
-                | All game versions:
-                a(href="#", ng-repeat="version in versions", ng-click="setSelectedVersion(version)") {{ version.name }},
-        .row
-            .col-sm-offset-1.col-sm-1
-                - var dangerModal = 'deleteGame'
-                - var dangerMessage = 'You will delete this game, and all its versions, data and reports, and you will not be able to recover them'
-                - var dangerOk = 'Delete'
-                - var dangerAction = 'deleteGame()'
-                button.btn.btn-danger(data-toggle="modal", data-target="#" + dangerModal) Delete game
-                include modals/dangermodal
+            .col-md-12
+                .container-fluid(ng-show="selectedVersion === undefined")
+                    .row
+                        .col-xs-offset-4.col-xs-4
+                            .top50.text-center.alert.alert-info
+                                | You have no versions for this game. You can 
+                                strong
+                                    a(href="#" ng-click="addEmptyVersion()") create a new one
+                .container-fluid(ng-show="selectedVersion")
+                    .row
+                        .col-xs-3.col-md-2.left-menu
+                            include data/menu
+                        .col-xs-9.col-md-10.tab-content
+                                #info.tab-pane.active
+                                    include data/information
+                                #zones.tab-pane
+                                    include data/zones
+                                #vars.tab-pane
+                                    include data/vars
+                                #choices.tab-pane
+                                    include data/choices
         include scripts
         script(src="/bower/jquery-file-upload/js/vendor/jquery.ui.widget.js")
         script(src="/bower/jquery-file-upload/js/jquery.iframe-transport.js")
