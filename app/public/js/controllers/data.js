@@ -1,6 +1,6 @@
 angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
-    .controller('DataCtrl', ['$scope', '$window', 'Versions',
-        function($scope, $window, Versions) {
+    .controller('DataCtrl', ['$scope', '$location', '$window', 'Versions',
+        function($scope, $location, $window, Versions) {
             $scope.deleteGame = function() {
                 if ($scope.selectedGame) {
                     $scope.selectedGame.$remove(function() {
@@ -15,7 +15,7 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                     version.name = 'Untitled version';
                     version.gameId = $scope.selectedGame._id;
                     version.$save(function() {
-                        $scope.selectedVersion = version;
+                        $location.search('version', version._id);
                         $scope.refreshVersions();
                     });
                 }
@@ -25,10 +25,6 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 if ($scope.selectedVersion) {
                     $scope.selectedVersion.$save();
                 }
-            };
-
-            $scope.setSelectedVersion = function(version) {
-                $scope.selectedVersion = version;
             };
 
             $scope.deleteVersion = function() {

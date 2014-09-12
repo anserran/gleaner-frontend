@@ -105,6 +105,10 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeAp
                 $scope.form.selectedGame = game;
             };
 
+            $scope.setSelectedVersion = function(version) {
+                $scope.form.selectedVersion = version;
+            };
+
             $scope.$watch('form.selectedGame', function(selected) {
                 if (selected) {
                     $scope.selectedGame = selected;
