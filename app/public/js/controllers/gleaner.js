@@ -1,4 +1,4 @@
-angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
+angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeApp', 'dataApp'])
     .run(function(editableOptions) {
         editableOptions.theme = 'bs3';
     }).filter('prettyDate', function() {
@@ -17,12 +17,32 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
                 return result;
             }
         };
-    }).controller('GleanerCtrl', ['$scope', '$params', 'Games', 'Versions',
-        function($scope, $params, Games, Versions) {
+    }).config(['$routeProvider',
+        function($routeProvider) {
+            $routeProvider.when('/home', {
+                templateUrl: '/app/home',
+                controller: 'HomeCtrl'
+            }).when('/data', {
+                templateUrl: '/app/data',
+                controller: 'DataCtrl'
+            }).otherwise({
+                redirectTo: '/home'
+            });
+        }
+    ]).controller('GleanerCtrl', ['$scope', '$location', 'Games', 'Versions',
+        function($scope, $location, Games, Versions) {
             $scope.loading = 0;
+            $scope.load = function() {
+                $scope.loading++;
+            };
 
+            $scope.loaded = function() {
+                $scope.loading--;
+            };
+
+            $scope.load();
             $scope.games = Games.query(function() {
-                var gameId = $params.game;
+                var gameId = $location.search().game;
                 if (gameId) {
                     for (var i = 0; i < $scope.games.length; i++) {
                         if ($scope.games[i]._id === gameId) {
@@ -35,19 +55,25 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
                     $scope.selectedGame = $scope.games[0];
                 }
                 $scope.refreshVersions();
-                $scope.loading--;
+                $scope.loaded();
             });
-            $scope.loading++;
+
+            $scope.saveGame = function() {
+                if ($scope.selectedGame) {
+                    $scope.load();
+                    $scope.selectedGame.$save($scope.loaded);
+                }
+            };
 
             $scope.refreshVersions = function(callback) {
                 if ($scope.selectedGame) {
                     $scope.form.selectedGame = $scope.selectedGame;
-                    $scope.loading++;
+                    $scope.load();
                     $scope.versions = Versions.query({
                         gameId: $scope.selectedGame._id
                     }, function() {
                         $scope.selectedVersion = null;
-                        var versionId = $params.version;
+                        var versionId = $location.search().version;
                         if (versionId) {
                             for (var i = 0; i < $scope.versions.length; i++) {
                                 if ($scope.versions[i]._id === versionId) {
@@ -65,7 +91,7 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
                         if (callback) {
                             callback();
                         }
-                        $scope.loading--;
+                        $scope.loaded();
                     });
                 }
             };
@@ -75,15 +101,21 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable'])
                 selectedVersion: null
             };
 
+            $scope.setSelectedGame = function(game) {
+                $scope.form.selectedGame = game;
+            };
+
             $scope.$watch('form.selectedGame', function(selected) {
                 if (selected) {
                     $scope.selectedGame = selected;
+                    $location.search('game', selected._id);
                     $scope.refreshVersions();
                 }
             });
 
             $scope.$watch('form.selectedVersion', function(selected) {
                 if (selected) {
+                    $location.search('version', selected._id);
                     $scope.selectedVersion = selected;
                 }
             });

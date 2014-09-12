@@ -7,21 +7,21 @@ nav.navbar.navbar-default(role="navigation")
 				span.icon-bar
 				span.icon-bar
 			img.navbar-brand(src="/images/logo.png")
-			a.navbar-brand(href="/app?game={{selectedGame._id}}&version={{selectedVersion._id}}") Gleaner
+			a.navbar-brand(href="#home?game={{selectedGame._id}}&version={{selectedVersion._id}}") Gleaner
 		.collapse.navbar-collapse#main-navbar
 			ul.nav.navbar-nav
 				li
-					a(href="/app?game={{selectedGame._id}}&version={{selectedVersion._id}}") Home
+					a(href="#home?game={{selectedGame._id}}&version={{selectedVersion._id}}") Home
 				li
-					a(href="/app/data?game={{selectedGame._id}}&version={{selectedVersion._id}}") Data
+					a(href="#data?game={{selectedGame._id}}&version={{selectedVersion._id}}") Data
 				li
-					a(href="/app/realtime?game={{selectedGame._id}}&version={{selectedVersion._id}}") Real time
+					a(href="#realtime?game={{selectedGame._id}}&version={{selectedVersion._id}}") Real time
 				li
-					a(href="/app/reports?game={{selectedGame._id}}&version={{selectedVersion._id}}") Reports
+					a(href="#reports?game={{selectedGame._id}}&version={{selectedVersion._id}}") Reports
 				li
-					a(href="/app/activity") Activiy Report
+					a(href="#activity?game={{selectedGame._id}}&version={{selectedVersion._id}}") Activiy Report
 				li
-					a(href="/app/admin") Administrator
+					a(href="#admin?game={{selectedGame._id}}&version={{selectedVersion._id}}") Administrator
 			form.navbar-form.navbar-right
 				.form-group
 					select.form-control.right10(ng-model="form.selectedGame" ng-options="game as game.title for game in games")
@@ -31,7 +31,7 @@ nav.navbar.navbar-default(role="navigation")
 					ul.dropdown-menu(role="menu")
 						li
 							a(href="/logout") Log out
-.container-fluid(ng-if="loading")
+.container-fluid(ng-if="loading > 0")
 	.row
 		.col-xs-12.text-center.top50
 			| Loading 

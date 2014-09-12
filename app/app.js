@@ -59,6 +59,10 @@ app.all(options.apiRoot + '*', redirect);
 app.all(options.redirectLogin + '*', redirect);
 
 app.get(options.redirectLogin, function(req, res) {
+    res.render('index');
+});
+
+app.get(options.redirectLogin + '/home', function(req, res) {
     res.render('home');
 });
 

@@ -5,7 +5,7 @@ angular.module('homeApp', ['gleanerServices', 'gleanerApp'])
                 var game = new Games();
                 game.title = 'Untitled new game';
                 game.$save(function() {
-                    $window.location = "/app/data?game=" + game._id;
+                    $window.location = "/app/#data?game=" + game._id;
                 });
             };
         }

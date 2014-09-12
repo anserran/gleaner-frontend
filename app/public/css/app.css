@@ -23,6 +23,22 @@ a.title:hover {
 	border: 1px solid #e7e7e7;
 }
 
+.no-padding {
+	padding: 0;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.actions a {
+	cursor: pointer;
+}
+
+.actions span.nav-span:hover {
+	background-color: #eee;
+}
+
 .actions a, .actions span.nav-span {
 	font-size: 0.9em;
 	color: black;
@@ -45,11 +61,18 @@ a.title:hover {
 	height: 75vh;
 }
 
-.left-menu ul.nav a {
+.left-menu ul.nav span.left-menu-item {
 	color: #707070;
+	display: block;
+	padding: 15px 10px;
+}
+
+.left-menu ul.nav span.left-menu-item:hover {
+	background-color: #eee;
 }
 
 .left-menu ul.nav li {
+	cursor: pointer;
 	padding-bottom: 10px;
 }
 
@@ -57,7 +80,7 @@ a.title:hover {
 	font-weight: bold;
 }
 
-.left-menu ul.nav li.active a {
+.left-menu ul.nav li.active span.left-menu-item {
 	color: #606060;
 }
 

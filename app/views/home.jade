@@ -1,26 +1,18 @@
-doctype html
-html(lang="en", ng-app="homeApp", ng-controller="GleanerCtrl")
-        include header
-    body(ng-controller="HomeCtrl")
-        include navbar
-        .container-fluid(ng-if="loading === 0")
-            .row
-                .col-md-offset-2.col-md-8
-                   a.btn.btn-primary(type="button", ng-click="createGame()")
-                        span.glyphicon.glyphicon-plus.right10
-                        | New game
-            .row
-                .col-md-offset-2.col-md-8
-                    table.table.table-hover
-                        thead
-                            tr
-                                th
-                                th Created
-                        tbody
-                            tr(ng-repeat="game in games")
-                                td
-                                    span.glyphicon.glyphicon-stats.right50
-                                    a(ng-href="app/data?game={{game._id}}") {{game.title}}
-                                td {{game._id | prettyDate }}
-        include scripts
-        script(src="js/controllers/home.js")
+.row
+	.col-md-offset-2.col-md-8
+		a.btn.btn-primary(type="button", ng-click="createGame()")
+			span.glyphicon.glyphicon-plus.right10
+			| New game
+.row
+	.col-md-offset-2.col-md-8
+		table.table.table-hover
+			thead
+				tr
+					th
+					th Created
+			tbody
+				tr(ng-repeat="game in games")
+					td
+						span.glyphicon.glyphicon-stats.right50
+						a(ng-href="#data?game={{game._id}}", ng-click="setSelectedGame(game)") {{game.title}}
+					td {{game._id | prettyDate }}

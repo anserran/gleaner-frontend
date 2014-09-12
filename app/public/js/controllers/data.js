@@ -1,12 +1,6 @@
 angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
-    .controller('GameCtrl', ['$scope', '$window', 'Versions',
+    .controller('DataCtrl', ['$scope', '$window', 'Versions',
         function($scope, $window, Versions) {
-            $scope.saveGame = function() {
-                if ($scope.selectedGame) {
-                    $scope.selectedGame.$save();
-                }
-            };
-
             $scope.deleteGame = function() {
                 if ($scope.selectedGame) {
                     $scope.selectedGame.$remove(function() {
@@ -67,10 +61,8 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
             });
 
             var updateZonesGraph = function() {
-                Gleaner.zonesgraph('#zones-graph', $scope.selectedVersion.zones);
+                Gleaner.zonesgraph('#zones-graph', $scope.selectedVersion.zones, '/app/');
             };
-
-            setEadLoader($scope);
 
             $scope.addDerivedVar = function() {
                 if ($scope.selectedVersion) {
@@ -92,52 +84,48 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 }
                 $scope.selectedVersion.$save();
             };
-        }
-    ]);
 
 
-var setEadLoader = function($scope) {
-    $(function() {
-        $('#fileupload').fileupload({
-            dataType: 'json',
-            acceptFileTypes: /(\.|\/)(zip|ead)$/i,
-            start: function(e) {
-                $('#data .not-loading').hide();
-                $('#data .loading').show();
-            },
-            done: function(e, data) {
-                $scope.selectedVersion.loading = true;
-                $scope.selectedVersion.$save(function() {
-                    $.post('/app/extractdata/', {
-                        file: data.files[0].name,
-                        versionId: $scope.selectedVersion._id
-                    }, function() {
-                        $('#analysis-state').text('Extracting data from .ead...');
-                        checkVersionLoaded($scope.selectedVersion);
-                    });
+            $(function() {
+                $('#fileupload').fileupload({
+                    dataType: 'json',
+                    acceptFileTypes: /(\.|\/)(zip|ead)$/i,
+                    start: function(e) {
+                        $scope.eadLoading = true;
+                    },
+                    done: function(e, data) {
+                        $scope.selectedVersion.loading = true;
+                        $scope.selectedVersion.$save(function() {
+                            $.post('/app/extractdata/', {
+                                file: data.files[0].name,
+                                versionId: $scope.selectedVersion._id
+                            }, function() {
+                                $('#analysis-state').text('Extracting data from .ead...');
+                                checkVersionLoaded($scope.selectedVersion);
+                            });
+
+                        });
+                    },
+                    progressall: function(e, data) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        $('#analysis-state').text('Loading ' + progress + ' %');
+                    }
 
                 });
-            },
-            progressall: function(e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('#analysis-state').text('Loading ' + progress + ' %');
-            }
+            });
 
-        });
-    });
-};
 
-var checkVersionLoaded = function(version) {
-    var check = function() {
-        version.$get(function() {
-            if (version.loading) {
-                setTimeout(check, 500);
-            } else {
-                $('#data .not-loading').show();
-                $('#data .loading').hide();
-            }
-        });
-    };
-
-    check();
-};
+            var checkVersionLoaded = function(version) {
+                var check = function() {
+                    version.$get(function() {
+                        if (version.loading) {
+                            setTimeout(check, 1000);
+                        } else {
+                            $scope.eadLoading = false;
+                        }
+                    });
+                };
+                check();
+            };
+        }
+    ]);
