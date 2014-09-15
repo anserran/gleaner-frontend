@@ -1,0 +1,14 @@
+.row
+	.col-md-10.col-md-offset-1(ng-show="!selectedVersion || !selectedVersion.segments")
+		.top50.text-center.alert.alert-info
+			| You have no segments for this versions. You can 
+			strong
+				a.pointer(ng-click="addSegment()") create a new segment
+.row.top10(ng-if="selectedVersion && selectedVersion.segments")
+	.col-sm-12
+		ul
+			li(ng-repeat="segment in selectedVersion.segments")
+				a(href="#",editable-text="segment.name" onbeforesave="saveVersion()") {{ segment.name }}
+				|  = 
+				a(href="#",editable-text="segment.condition" onbeforesave="saveVersion()") {{ segment.condition }}
+				button.left10.btn.btn-xs.btn-default(ng-click="deleteSegment(variable)") Delete

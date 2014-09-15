@@ -123,5 +123,27 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 };
                 check();
             };
+
+            // Segments
+            $scope.addSegment = function() {
+                if (!$scope.selectedVersion.segments) {
+                    $scope.selectedVersion.segments = [];
+                }
+
+                $scope.selectedVersion.segments.push({
+                    name: "New segment",
+                    condition: "true"
+                });
+
+                $scope.saveVersion();
+            };
+
+            $scope.deleteSegment = function(segment) {
+                var index = $scope.selectedVersion.segments.indexOf(segment);
+                if (index > -1) {
+                    $scope.selectedVersion.segments.splice(index, 1);
+                }
+                $scope.selectedVersion.$save();
+            };
         }
     ]);
