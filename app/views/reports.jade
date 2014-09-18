@@ -1,33 +1,35 @@
-doctype html
-html(lang="en", ng-app="reportsApp", ng-controller="GleanerCtrl")
-        include header
-        link(rel="stylesheet", href="/bower/gridstercss/index.css")
-        link(rel="stylesheet", href="/css/reports.css")
-    body(ng-controller="ReportsCtrl")
-        include navbar
-        .container-fluid
-            .row
-                .col-xs-2
-                    span.btn.btn-primary#relaunch-analysis Relaunch analysis
-                    a.left10.add-panel(href="#" ng-click="addPanel()")
-                                span.glyphicon.glyphicon-plus
-                    ul#panel-list.list-group
-                        li#panel-link.list-group-item.hidden
-                            span.glyphicon.glyphicon-chevron-right.right10
-                            a(href="#")
-                .col-xs-10
-                    .container-fluid
-                        .row
-                            .col-xs-12
-                                - var modalId = 'createReportModal'
-                                button.btn.btn-default(data-toggle="modal", data-target="#" + modalId) Add report
-                                include modals/createreport
-                    .container-fluid
-                        .row
-                            .col-xs-12.top50.gridster
-                                ul#reports
-        include scripts
-        script(type="text/javascript", src="https://www.google.com/jsapi")
-        script(src="/bower/gridster/index.js")
-        script(src="/js/controllers/reports.js")
-        script(src="/js/reports/simple.js")
+.row
+	.col-xs-10
+		span.left10.title {{ selectedGame.title }}
+include reports/actions
+.row
+	.col-md-12
+		.container-fluid(ng-show="!selectedVersion.panels || !selectedVersion.panels.length")
+			.row
+				.col-xs-offset-3.col-xs-6
+					.top50.text-center.alert.alert-info
+						| You have no reports panels for this game. You can 
+						strong
+							a.pointer(ng-click="addPanel()") create a new one
+		.container-fluid(ng-show="selectedVersion.panels && selectedVersion.panels.length")
+			.row
+				.col-xs-3.col-md-2.left-menu
+					ul.nav.panels
+						li(ng-repeat="panel in selectedVersion.panels", ng-class="currentPanel() === panel ? ' active' : ''")
+							span.left-menu-item(ng-click="showPanel($index)") {{ panel.name }}
+				.col-xs-9.col-md-10
+					.container-fluid(ng-if="selectedPanelIndex >= 0")
+						.row
+							.col-xs-12
+								a.left10.title(href="#", editable-text="currentPanel().name" onbeforesave="saveVersion()") {{ currentPanel().name }}
+						.row
+							.gridter(gridster="gridsterOpts")
+								ul
+									li(gridster-item="report" ng-repeat="report in currentPanel().reports")
+										.container-fluid
+											.row.text-right.report-tools
+												.col-xs-12
+													span.btn.glyphicon.glyphicon-cog(ng-click="editReport($index)")
+													span.btn.glyphicon.glyphicon-trash(ng-click="deleteReport($index)")
+											.row
+												.col-xs-12(ng-attr-id="{{ 'report' + $index }}")

@@ -32,3 +32,9 @@
 				- var dangerDismiss = true
 				a(data-toggle="modal", data-target="#" + dangerModal) Delete version
 				include ../modals/dangermodal
+			li(ng-show="view === 'segments'")
+				a(ng-click="addSegment()") New segment
+					span.glyphicon.glyphicon-plus.left10
+			li(ng-show="view === 'vars'")
+				a(ng-click="addDerivedVar()") New derived var
+					span.glyphicon.glyphicon-plus.left10

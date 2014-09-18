@@ -10,4 +10,4 @@
 				p #{dangerMessage}
 			.modal-footer
 				button.btn.btn-default(type="button", data-dismiss="modal") Cancel
-				button.btn.btn-danger(type="button", data-dismiss=dangerDismiss ? "modal" : "", ng-click="" + dangerAction) #{dangerOk}
+				button.btn.btn-danger(type="button", data-dismiss="" + (dangerDismiss ? "modal" : ""), ng-click="" + dangerAction) #{dangerOk}

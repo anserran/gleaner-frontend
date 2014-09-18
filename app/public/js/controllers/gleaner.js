@@ -1,4 +1,4 @@
-angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeApp', 'dataApp'])
+angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeApp', 'dataApp', 'reportsApp', 'gridster', 'ui.bootstrap'])
     .run(function(editableOptions) {
         editableOptions.theme = 'bs3';
     }).filter('prettyDate', function() {
@@ -25,6 +25,9 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeAp
             }).when('/data', {
                 templateUrl: '/app/data',
                 controller: 'DataCtrl'
+            }).when('/reports', {
+                templateUrl: '/app/reports',
+                controller: 'ReportsCtrl'
             }).otherwise({
                 redirectTo: '/home'
             });
@@ -62,6 +65,13 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeAp
                 if ($scope.selectedGame) {
                     $scope.load();
                     $scope.selectedGame.$save($scope.loaded);
+                }
+            };
+
+
+            $scope.saveVersion = function(callback) {
+                if ($scope.selectedVersion) {
+                    $scope.selectedVersion.$save(callback);
                 }
             };
 

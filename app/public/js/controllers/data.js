@@ -21,12 +21,6 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 }
             };
 
-            $scope.saveVersion = function() {
-                if ($scope.selectedVersion) {
-                    $scope.selectedVersion.$save();
-                }
-            };
-
             $scope.deleteVersion = function() {
                 if ($scope.selectedVersion) {
                     $scope.selectedVersion.$remove(function() {
@@ -144,6 +138,14 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                     $scope.selectedVersion.segments.splice(index, 1);
                 }
                 $scope.selectedVersion.$save();
+            };
+
+            $scope.updateGroupBy = function(segment) {
+                if (segment.groupby) {
+                    segment.groupbyplayer = {};
+                } else {
+                    delete segment.groupbyplayer;
+                }
             };
         }
     ]);

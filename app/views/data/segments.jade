@@ -1,5 +1,5 @@
 .row
-	.col-md-10.col-md-offset-1(ng-show="!selectedVersion || !selectedVersion.segments")
+	.col-md-10.col-md-offset-1(ng-show="!selectedVersion || !selectedVersion.segments || selectedVersion.segments.length === 0")
 		.top50.text-center.alert.alert-info
 			| You have no segments for this versions. You can 
 			strong
@@ -11,4 +11,7 @@
 				a(href="#",editable-text="segment.name" onbeforesave="saveVersion()") {{ segment.name }}
 				|  = 
 				a(href="#",editable-text="segment.condition" onbeforesave="saveVersion()") {{ segment.condition }}
-				button.left10.btn.btn-xs.btn-default(ng-click="deleteSegment(variable)") Delete
+				a.left20(href="#",editable-checkbox="segment.groupby",onbeforesave="updateGroupBy(segment)") {{ segment.groupby ? 'Group by player' : 'No group'}}
+				a.left20(ng-show="segment.groupby",href="#",editable-select="segment.groupbyplayer.operator",onbeforesave="saveVersion()", e-ng-options="operator for operator in ['first', 'last']") {{ segment.groupbyplayer.operator || 'No operator'}}
+				a.left20(ng-show="segment.groupby",href="#",editable-text="segment.groupbyplayer.operation",onbeforesave="saveVersion()") {{ segment.groupbyplayer.operation || 'No operation' }}
+				button.left10.btn.btn-xs.btn-default(ng-click="deleteSegment(segment)") Delete

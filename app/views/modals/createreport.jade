@@ -8,15 +8,18 @@
 				h4.modal-title Create report
 			.modal-body
 				div#reports-list
-					a.report-type.btn.btn-default(ng-click="setReportType('counter')") Counter
-				div#report-configuration.hidden
-					ul
-						li
-							| Counter variable name: 
-							a(href="#" editable-text="newReport.counterVariable") {{ newReport.counterVariable || 'No name'}}
-						li
-							| Condition: 
-							a(href="#" editable-text="newReport.condition") {{ newReport.condition || 'No condition'}}
-					button.btn.btn-default(ng-click="addNewReport()", data-dismiss="modal") Add
+					a.report-type.btn.btn-default(ng-click="createReport('counter')", data-dismiss="modal") Counter
 			.modal-footer
 				button.btn.btn-default(type="button", data-dismiss="modal") Cancel
+script(type="text/ng-template" id="counter.html")
+	.modal-header
+		| Counter
+	.modal-body
+		p
+			a(href="#",editable-text="report.counterVariable") {{ report.counterVariable || 'No counter variable.'}}
+		p
+			a(href="#",editable-text="report.condition") {{ report.condition || 'No condition.'}}
+	.modal-footer
+		button.btn.btn-primary(type="button" data-dismiss="modal" ng-if="create" ng-click="createReport()") Create
+		button.btn.btn-primary(type="button" data-dismiss="modal" ng-if="!create" ng-click="saveReport()") Save
+		button.btn.btn-default(type="button" data-dismiss="modal" ng-click="dismiss()") Cancel

@@ -1,60 +1,46 @@
-var gridster;
-var idCounter = 0;
+angular.module('reportsApp', ['gleanerServices', 'gleanerApp', 'gridster'])
+    .controller('ReportsCtrl', ['$scope', '$modal', 'Results',
+        function($scope, $modal, Results) {
+            var savePanels = function(event, ui, $widget) {
+                $scope.selectedVersion.$save();
+            };
 
-google.load('visualization', '1.0', {
-    'packages': ['corechart']
-});
-
-angular.module('reportsApp', ['gleanerServices', 'gleanerApp'])
-    .controller('ReportsCtrl', ['$scope', 'Result',
-        function($scope, Result) {
+            $scope.gridsterOpts = {
+                margins: [20, 20],
+                columns: 3,
+                minColumns: 1,
+                pushing: true,
+                floating: true,
+                draggable: {
+                    enabled: true,
+                    stop: savePanels
+                },
+                resizable: {
+                    enabled: true,
+                    stop: savePanels
+                }
+            };
             $scope.$watch('selectedVersion', function() {
                 if ($scope.selectedVersion) {
-                    $scope.results = Result.get({
+                    $scope.results = Results.query({
                         gameId: $scope.selectedGame._id,
-                        versionId: $scope.selectedVersion._id
+                        versionId: $scope.selectedVersion._id,
                     }, function() {
                         var panels = $scope.selectedVersion.panels;
-                        if (panels) {
-                            panels.forEach(addPanelToDom);
-                            if (panels[0]) {
-                                $scope.showPanel(0);
-                            }
+                        if (panels && panels.length) {
+                            $scope.showPanel(0);
                         }
                     });
                 }
             });
 
-            $(function() {
-                $('#relaunch-analysis').click(function() {
-                    $.post('/api/analyze/' + $scope.selectedVersion._id);
-                });
-
-                gridster = $(".gridster ul").gridster({
-                    widget_margins: [10, 10],
-                    min_cols: 3,
-                    max_cols: 3,
-                    resize: {
-                        enabled: true,
-                        stop: savePanels
-                    },
-                    draggable: {
-                        stop: savePanels
-                    },
-                    serialize_params: function($w, wgd) {
-                        var report = $w.children('div').data();
-                        report.x = wgd.col;
-                        report.y = wgd.row;
-                        report.width = wgd.size_x;
-                        report.height = wgd.size_y;
-                        return report;
-                    }
-                }).data('gridster');
-            });
+            $scope.relaunchAnalysis = function() {
+                $.post('/api/analyze/' + $scope.selectedVersion._id);
+            };
 
             $scope.addPanel = function() {
                 var newPanel = {
-                    name: 'New panel',
+                    name: 'Untitled panel',
                     reports: []
                 };
 
@@ -64,65 +50,121 @@ angular.module('reportsApp', ['gleanerServices', 'gleanerApp'])
                 }
                 panels.push(newPanel);
                 $scope.selectedVersion.$save(function() {
-                    addPanelToDom(newPanel);
+                    $scope.showPanel($scope.selectedVersion.panels.length - 1);
                 });
             };
 
-            $scope.showPanel = function(i) {
-                $scope.selectedPanel = $scope.selectedVersion.panels[i];
-                showReports($scope.selectedPanel);
+            $scope.showPanel = function(index) {
+                $scope.selectedPanelIndex = index;
+                refreshReports();
+            };
+
+            $scope.deleteCurrentPanel = function() {
+                $scope.selectedVersion.panels.splice($scope.selectedPanelIndex, 1);
+                $scope.saveVersion(function() {
+                    if ($scope.selectedVersion.panels.length) {
+                        $scope.selectedPanelIndex = 0;
+                    } else {
+                        delete $scope.selectedPanelIndex;
+                    }
+                });
+            };
+
+            $scope.deleteReport = function(index) {
+                $scope.currentPanel().reports.splice(index, 1);
+                $scope.saveVersion();
+            };
+
+            $scope.currentPanel = function() {
+                return $scope.selectedVersion && $scope.selectedVersion.panels ? $scope.selectedVersion.panels[$scope.selectedPanelIndex] : null;
             };
 
             $scope.addNewReport = function() {
                 var report = $scope.newReport;
-                $scope.selectedPanel.reports.push(report);
-                $scope.selectedVersion.$save(function() {
-                    addReportToDom(report);
-                });
-            };
-
-            $scope.setReportType = function(type) {
-                $scope.newReport = {
-                    type: type
-                };
-                $("#reports-list").hide();
-                $("#report-configuration").removeClass('hidden');
-            };
-
-            var addPanelToDom = function(panel) {
-                var i = $('#panel-list li').length - 1;
-
-                var newPanel = $('#panel-link').clone();
-                newPanel.removeClass('hidden');
-                newPanel.children('a').text(panel.name || 'Unnamed panel').on('click', function() {
-                    $scope.showPanel(i);
-                });
-                $('#panel-list').append(newPanel);
-            };
-
-            var showReports = function(panel) {
-                gridster.remove_all_widgets();
-                var reportsDiv = $('#reports');
-                reportsDiv.empty();
-                var reports = panel.reports;
-                if (!reports || reports.length === 0) {
-                    reportsDiv.append('<p>No reports in this panel</p>');
-                } else {
-                    reports.forEach(addReportToDom);
-                }
-            };
-
-            var addReportToDom = function(report) {
-                var containerId = 'report' + idCounter++;
-                var widget = gridster.add_widget('<li><div id="' + containerId + '"></div></li>', report.width, report.height, report.x, report.y);
-                Gleaner.draw('#' + containerId, $scope.results, report);
-                widget.children('div').data(report);
-                idCounter++;
-            };
-
-            var savePanels = function(event, ui, $widget) {
-                $scope.selectedPanel.reports = gridster.serialize();
+                report.sizeX = 1;
+                report.sizeY = 1;
+                report.row = 0;
+                report.col = 0;
+                $scope.currentPanel().reports.push(report);
                 $scope.selectedVersion.$save();
+            };
+
+            $scope.editReport = function(index) {
+                $scope.modifyReport($scope.currentPanel().reports[index], index);
+            };
+
+            $scope.createReport = function(type) {
+                $scope.modifyReport({
+                    type: type
+                }, -1);
+            };
+
+            $scope.modifyReport = function(report, index) {
+                var reportModal = $modal.open({
+                    templateUrl: 'counter.html',
+                    controller: 'ReportModalCtrl',
+                    resolve: {
+                        create: function() {
+                            return index === -1;
+                        },
+                        report: function() {
+                            return report;
+                        }
+                    }
+                });
+
+                reportModal.result.then(function(result) {
+                    var report = result[1];
+                    switch (result[0]) {
+                        case 'create':
+                            $scope.currentPanel().reports.push(report);
+                            break;
+                        case 'save':
+                            $scope.currentPanel().reports[index] = report;
+                            break;
+                    }
+                    $scope.saveVersion();
+                });
+            };
+
+            $scope.toggleSegment = function(segment) {
+                $scope.segments[segment] = $scope.segments[segment] ? false : true;
+                refreshReports();
+            };
+
+            var refreshReports = function() {
+                $scope.currentPanel().reports.forEach(function(report, index) {
+                    Gleaner.draw('#report' + index, $scope.results, $scope.segments, report);
+                });
+            };
+
+            $scope.$watch('currentPanel()', function() {
+                if ($scope.currentPanel()) {
+                    refreshReports();
+                }
+            });
+
+            setTimeout(refreshReports, 1000);
+
+            $scope.segments = {
+                'all': true
+            };
+        }
+    ]).controller('ReportModalCtrl', ['$scope', '$modalInstance', 'create', 'report',
+        function($scope, $modalInstance, create, report) {
+            $scope.create = create;
+            $scope.report = report;
+
+            $scope.createReport = function() {
+                $modalInstance.close(['create', report]);
+            };
+
+            $scope.saveReport = function() {
+                $modalInstance.close(['save', report]);
+            };
+
+            $scope.dismiss = function() {
+                $modalInstance.dismiss('cancel');
             };
         }
     ]);

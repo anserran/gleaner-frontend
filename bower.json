@@ -7,15 +7,15 @@
         "angular-resource": "1.2.x",
         "angular-mocks": "~1.2.x",
         "angular-xeditable": "*",
+        "angular-gridster": "*",
         "checklist-model": "*",
+        "angular-bootstrap": "*",
         "bootstrap": "*",
         "jquery": "*",
         "jquery-dateFormat": "*",
         "jquery-file-upload": "*",
         "jquery-query": "https://raw.githubusercontent.com/alrusdi/jquery-plugin-query-object/master/jquery.query-object.js",
         "underscore": "http://underscorejs.org/underscore.js",
-        "gridster": "https://raw.githubusercontent.com/ducksboard/gridster.js/master/dist/jquery.gridster.min.js",
-        "gridstercss": "https://raw.githubusercontent.com/ducksboard/gridster.js/master/dist/jquery.gridster.min.css",
         "d3": "*"
     }
 }
