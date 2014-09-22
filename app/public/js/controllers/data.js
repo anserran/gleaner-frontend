@@ -140,11 +140,9 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 $scope.selectedVersion.$save();
             };
 
-            $scope.updateGroupBy = function(segment) {
-                if (segment.groupby) {
-                    segment.groupbyplayer = {};
-                } else {
-                    delete segment.groupbyplayer;
+            $scope.updateHaving = function(segment) {
+                if (!segment.groupby && segment.hasOwnProperty('having')) {
+                    delete segment.having;
                 }
             };
         }

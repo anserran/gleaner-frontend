@@ -11,7 +11,6 @@
 				a(href="#",editable-text="segment.name" onbeforesave="saveVersion()") {{ segment.name }}
 				|  = 
 				a(href="#",editable-text="segment.condition" onbeforesave="saveVersion()") {{ segment.condition }}
-				a.left20(href="#",editable-checkbox="segment.groupby",onbeforesave="updateGroupBy(segment)") {{ segment.groupby ? 'Group by player' : 'No group'}}
-				a.left20(ng-show="segment.groupby",href="#",editable-select="segment.groupbyplayer.operator",onbeforesave="saveVersion()", e-ng-options="operator for operator in ['first', 'last']") {{ segment.groupbyplayer.operator || 'No operator'}}
-				a.left20(ng-show="segment.groupby",href="#",editable-text="segment.groupbyplayer.operation",onbeforesave="saveVersion()") {{ segment.groupbyplayer.operation || 'No operation' }}
+				a.left20(href="#",editable-checkbox="segment.groupby",onbeforesave="updateHaving(segment)") {{ segment.groupby ? 'Group by player' : 'No group'}}
+				a.left20(ng-show="segment.groupby",href="#",editable-select="segment.having",onbeforesave="saveVersion()", e-ng-options="having for having in ['first', 'last']") {{ segment.having || 'No operator'}}
 				button.left10.btn.btn-xs.btn-default(ng-click="deleteSegment(segment)") Delete
