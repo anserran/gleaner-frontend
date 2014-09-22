@@ -94,7 +94,9 @@ angular.module('reportsApp', ['gleanerServices', 'gleanerApp', 'gridster'])
             };
 
             $scope.createReport = function(type) {
+                var id = newReportId();
                 $scope.modifyReport({
+                    id: id,
                     type: type
                 }, -1);
             };
@@ -127,15 +129,27 @@ angular.module('reportsApp', ['gleanerServices', 'gleanerApp', 'gridster'])
                 });
             };
 
-            $scope.toggleSegment = function(segment) {
-                $scope.segments[segment] = $scope.segments[segment] ? false : true;
-                refreshReports();
-            };
 
             var refreshReports = function() {
                 $scope.currentPanel().reports.forEach(function(report, index) {
                     Gleaner.draw('#report' + index, $scope.results, $scope.segments, report);
                 });
+            };
+
+            var newReportId = function() {
+                var panels = $scope.selectedVersion.panels;
+                var freeId;
+                var id;
+                do {
+                    id = Math.random().toString(10).substr(10);
+                    freeId = true;
+                    for (var i = 0; i < panels.length && freeId; i++) {
+                        for (var j = 0; panels[i].reports && j < panels[i].reports.length && freeId; j++) {
+                            freeId = panels[i].reports[j].id !== id;
+                        }
+                    }
+                } while (!freeId);
+                return id;
             };
 
             $scope.$watch('currentPanel()', function() {
@@ -145,6 +159,11 @@ angular.module('reportsApp', ['gleanerServices', 'gleanerApp', 'gridster'])
             });
 
             setTimeout(refreshReports, 1000);
+
+            $scope.toggleSegment = function(segment) {
+                $scope.segments[segment] = $scope.segments[segment] ? false : true;
+                refreshReports();
+            };
 
             $scope.segments = {
                 'all': true
