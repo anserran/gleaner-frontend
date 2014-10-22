@@ -9,16 +9,17 @@
 			.modal-body
 				div#reports-list
 					a.report-type.btn.btn-default(ng-click="createReport('counter')", data-dismiss="modal") Counter
+					a.report-type.btn.btn-default(ng-click="createReport('choices')", data-dismiss="modal") Choices
 			.modal-footer
 				button.btn.btn-default(type="button", data-dismiss="modal") Cancel
 script(type="text/ng-template" id="counter.html")
 	.modal-header
-		| Counter
-	.modal-body
-		p
-			a(href="#",editable-text="report.counterVariable") {{ report.counterVariable || 'No counter variable.'}}
+		| Report
+	.modal-body(ng-if="report.type === 'counter'")
 		p
 			a(href="#",editable-text="report.condition") {{ report.condition || 'No condition.'}}
+	.modal-body(ng-if="report.type === 'choices'")
+		a(href="#" editable-select="report.choiceIds" e-multiple e-ng-options="choice.id as choice.id for choice in selectedVersion.choices") {{ (report.choiceIds.size || 0) + ' choices selected' }}
 	.modal-footer
 		button.btn.btn-primary(type="button" data-dismiss="modal" ng-if="create" ng-click="createReport()") Create
 		button.btn.btn-primary(type="button" data-dismiss="modal" ng-if="!create" ng-click="saveReport()") Save

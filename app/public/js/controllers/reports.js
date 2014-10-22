@@ -111,6 +111,9 @@ angular.module('reportsApp', ['gleanerServices', 'gleanerApp', 'gridster'])
                         },
                         report: function() {
                             return report;
+                        },
+                        selectedVersion: function() {
+                            return $scope.selectedVersion;
                         }
                     }
                 });
@@ -132,7 +135,7 @@ angular.module('reportsApp', ['gleanerServices', 'gleanerApp', 'gridster'])
 
             var refreshReports = function() {
                 $scope.currentPanel().reports.forEach(function(report, index) {
-                    Gleaner.draw('#report' + index, $scope.results, $scope.segments, report);
+                    Gleaner.draw('#report' + index, $scope.results, $scope.segments, report, $scope.selectedVersion);
                 });
             };
 
@@ -149,7 +152,7 @@ angular.module('reportsApp', ['gleanerServices', 'gleanerApp', 'gridster'])
                         }
                     }
                 } while (!freeId);
-                return id;
+                return 'r' + id;
             };
 
             $scope.$watch('currentPanel()', function() {
@@ -169,10 +172,11 @@ angular.module('reportsApp', ['gleanerServices', 'gleanerApp', 'gridster'])
                 'all': true
             };
         }
-    ]).controller('ReportModalCtrl', ['$scope', '$modalInstance', 'create', 'report',
-        function($scope, $modalInstance, create, report) {
+    ]).controller('ReportModalCtrl', ['$scope', '$modalInstance', 'create', 'report', 'selectedVersion',
+        function($scope, $modalInstance, create, report, selectedVersion) {
             $scope.create = create;
             $scope.report = report;
+            $scope.selectedVersion = selectedVersion;
 
             $scope.createReport = function() {
                 $modalInstance.close(['create', report]);
