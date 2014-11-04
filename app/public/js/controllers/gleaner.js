@@ -1,9 +1,13 @@
-angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeApp', 'dataApp', 'reportsApp', 'gridster', 'ui.bootstrap'])
+angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeApp', 'dataApp', 'reportsApp', 'realtimeApp', 'gridster', 'ui.bootstrap'])
     .run(function(editableOptions) {
         editableOptions.theme = 'bs3';
-    }).filter('prettyDate', function() {
+    }).filter('prettyDateId', function() {
         return function(_id) {
             return $.format.prettyDate(new Date(parseInt(_id.slice(0, 8), 16) * 1000));
+        };
+    }).filter('prettyDate', function() {
+        return function(date) {
+            return $.format.prettyDate(new Date(date));
         };
     }).filter('list', function() {
         return function(list) {
@@ -17,6 +21,14 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeAp
                 return result;
             }
         };
+    }).filter('object2array', function() {
+        return function(input) {
+            var out = [];
+            for (var i in input) {
+                out.push(input[i]);
+            }
+            return out;
+        }
     }).config(['$routeProvider',
         function($routeProvider) {
             $routeProvider.when('/home', {
@@ -28,6 +40,9 @@ angular.module('gleanerApp', ['gleanerServices', 'xeditable', 'ngRoute', 'homeAp
             }).when('/reports', {
                 templateUrl: '/app/reports',
                 controller: 'ReportsCtrl'
+            }).when('/realtime', {
+                templateUrl: '/app/realtime',
+                controller: 'RealtimeCtrl'
             }).otherwise({
                 redirectTo: '/home'
             });

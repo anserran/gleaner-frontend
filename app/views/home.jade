@@ -15,4 +15,21 @@
 					td
 						span.glyphicon.glyphicon-stats.right50
 						a(ng-href="#data?game={{game._id}}", ng-click="setSelectedGame(game)") {{game.title}}
-					td {{game._id | prettyDate }}
+					td {{game._id | prettyDateId }}
+.row
+	.col-md-offset-2.col-md-8
+		h4 Recent players
+		table.table.table-hover
+			thead
+				tr
+					th Player
+					th Version
+					th Last access
+			tbody
+				tr(ng-repeat="user in recentUsers | object2array | orderBy:'lastAccessed'")
+					td
+						{{ user.playerId }}
+					td
+						{{ user.versionId }}
+					td
+						{{ user.lastAccessed | prettyDate }}

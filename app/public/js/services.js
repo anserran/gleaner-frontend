@@ -22,3 +22,9 @@ gleanerServices.factory('Results', ['$resource',
         return $resource('/api/games/:gameId/versions/:versionId/results');
     }
 ]);
+
+gleanerServices.factory('Online', ['$resource',
+    function($resource) {
+        return $resource('/api/online');
+    }
+]);

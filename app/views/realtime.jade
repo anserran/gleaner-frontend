@@ -1,16 +1,6 @@
-doctype html
-html(lang="en", ng-app="realTimeApp", ng-controller="GleanerCtrl")
-        include header        
-        link(rel="stylesheet", href="/css/reports.css")
-    body(ng-controller="RealtimeCtrl")
-        include navbar
-        .row
-            .col-sm-offset-1.col-sm-10 {{ selectedGame.title }} - {{ selectedVersion.name }} 
-                span.number-players
-        .row
-            .col-sm-offset-1.col-sm-10
-                #zones-graph
-        include scripts
-        script(src="/bower/d3/d3.min.js")
-        script(src="/js/reports/zonesgraph.js")  
-        script(src="/js/controllers/realtime.js")
+.row
+    .col-sm-offset-1.col-sm-10 {{ selectedGame.title }} - {{ selectedVersion.name }}
+        span.number-players
+.row
+    .col-sm-12
+        #zones-graph

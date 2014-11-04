@@ -1,4 +1,4 @@
-angular.module('realTimeApp', ['gleanerServices', 'gleanerApp'])
+angular.module('realtimeApp', ['gleanerServices', 'gleanerApp'])
     .controller('RealtimeCtrl', ['$scope',
         function($scope) {
 
