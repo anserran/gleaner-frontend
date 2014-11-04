@@ -29,10 +29,6 @@ var options = {
     redirectLogin: '/app'
 };
 
-/*app.all('*', function(req, res, next) {
-    setTimeout(next, 500);
-});*/
-
 app.get('/', function(req, res) {
     res.redirect(options.redirectLogin);
 });
@@ -128,8 +124,8 @@ app.get('/app/uploads/*', function(req, res) {
         }
     });
 });
-
-MongoClient.connect('mongodb://127.0.0.1:27017/gleaner', function(err, db) {
+var connectionString = 'mongodb://' + conf.mongoHost + ':' + conf.mongoPort + '/' + conf.mongoDatabase;
+MongoClient.connect(connectionString, function(err, db) {
     if (err) {
         console.log(err);
     } else {
@@ -137,8 +133,8 @@ MongoClient.connect('mongodb://127.0.0.1:27017/gleaner', function(err, db) {
         app.all('*', function(req, res) {
             res.redirect(options.redirectLogin);
         });
-        app.listen(3000, function() {
-            console.log('Listening in 3000');
+        app.listen(conf.port, function() {
+            console.log('Listening in ' + conf.port);
         });
     }
 });
