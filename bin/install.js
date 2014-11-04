@@ -5,7 +5,7 @@ if (process.argv.length != 4) {
     var password = process.argv[3];
     var MongoClient = require('mongodb').MongoClient;
 
-    var conf = require('./app/configuration');
+    var conf = require('../app/configuration');
     var connectionString = 'mongodb://' + conf.mongoHost + ':' + conf.mongoPort + '/' + conf.mongoDatabase;
     MongoClient.connect(connectionString, function(err, database) {
         if (err) {
