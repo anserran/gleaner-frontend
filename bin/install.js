@@ -12,7 +12,7 @@ if (process.argv.length != 4) {
             console.log(err);
         } else {
             var db = require('gleaner-data').db;
-            db.setDB(database);
+            db.db = database;
             var users = require('gleaner-data').users;
             users.setSalt(conf.passwordsSalt);
             users.insert({

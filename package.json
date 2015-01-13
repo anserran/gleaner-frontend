@@ -30,7 +30,7 @@
     },
     "scripts": {
         "postinstall": "bower install",
-        "start": "node app/app.js",
+        "start": "forever start app/app.js",
         "prestart": "npm install",
 
         "pretest": "npm install",
