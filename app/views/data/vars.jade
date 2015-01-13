@@ -8,7 +8,7 @@
 				a(href="#",editable-text="variable.name" onbeforesave="saveVersion()") {{ variable.name }}
 				|  = 
 				a(href="#",editable-text="variable.value" onbeforesave="saveVersion()") {{ variable.value }}
-				button.left10.btn.btn-xs.btn-default(ng-click="deleteDerivedVar(variable)") Delete
+				button.left10.btn.btn-xs.btn-default(ng-click="deleteFromList('derivedVars', variable)") Delete
 .row.top10
 	.col-sm-12
 		h4 Variables emitted by the game

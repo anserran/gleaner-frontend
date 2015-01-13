@@ -38,3 +38,9 @@
 			li(ng-show="view === 'vars'")
 				a(ng-click="addDerivedVar()") New derived var
 					span.glyphicon.glyphicon-plus.left10
+			li(ng-show="view === 'realtime'")
+				a(ng-click="addWarning()") New warning
+					span.glyphicon.glyphicon-plus.left10
+			li(ng-show="view === 'realtime'")
+				a(ng-click="addAlert()") New alert
+					span.glyphicon.glyphicon-plus.left10

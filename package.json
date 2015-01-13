@@ -4,6 +4,8 @@
     "name": "gleaner-frontend",
     "description": "Frontend for gleaner",
     "dependencies": {
+        "q": "1.0.1",
+        "easy-collections": "anserran/easy-collections",
         "express": "4.8.x",
         "express-session": "1.7.x",
         "body-parser": "1.6.3",
@@ -13,7 +15,8 @@
         "mongodb": "1.4.8",
         "jquery-file-upload-middleware": "*",
         "python-shell": "*",
-        "shelljs": "*"
+        "shelljs": "*",
+        "kafka-node": "0.2.14"
     },
     "devDependencies": {
         "karma": "^0.12.16",

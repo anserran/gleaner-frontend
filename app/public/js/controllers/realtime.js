@@ -1,22 +1,40 @@
 angular.module('realtimeApp', ['gleanerServices', 'gleanerApp'])
-    .controller('RealtimeCtrl', ['$scope',
-        function($scope) {
-
-            var refreshGraph = function() {
-                if ($scope.selectedVersion && $scope.selectedVersion._id) {
-                    $.get('/api/games/' + $scope.selectedGame._id + '/versions/' + $scope.selectedVersion._id + '/rt', function(data) {
-                        data.forEach(function(gameplay) {
-                            $scope.zonesgraph.zone(gameplay._id, gameplay.zone);
-                        });
-                        $('.number-players').text('Players: ' + data.length);
+    .controller('RealtimeCtrl', ['$scope', 'Sessions',
+        function ($scope, Sessions) {
+            $scope.running = true;
+            $scope.refreshSessions = function () {
+                if ($scope.selectedVersion) {
+                    $scope.sessions = Sessions.query({
+                        gameId: $scope.selectedGame._id,
+                        versionId: $scope.selectedVersion._id
+                    }, function () {
+                        $scope.running = false;
+                        for (var i = 0; i < $scope.sessions.length; i++) {
+                            if (!$scope.sessions[i].end) {
+                                $scope.running = true;
+                                break;
+                            }
+                        }
                     });
                 }
             };
 
-            $scope.$watch('selectedVersion', function() {
-                $scope.zonesgraph = Gleaner.zonesgraph('#zones-graph', $scope.selectedVersion.zones);
+            $scope.$watch('selectedVersion', function () {
+                $scope.refreshSessions();
             });
 
-            setInterval(refreshGraph, 5000);
+            $scope.start = function () {
+                $.post('/api/sessions?gameId=' + $scope.selectedGame._id + "&versionId=" + $scope.selectedVersion._id + "&event=start",
+                    function (session) {
+                        window.location.replace("/rt?session=" + session._id);
+                    });
+            };
+
+            $scope.end = function () {
+                $.post('/api/sessions?gameId=' + $scope.selectedGame._id + "&versionId=" + $scope.selectedVersion._id + "&event=end",
+                    function (session) {
+                        window.location.replace("/rt?session=" + session._id);
+                    });
+            };
         }
     ]);

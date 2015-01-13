@@ -5,8 +5,48 @@ var express = require('express'),
     conf = require('./configuration'),
     upload = require('jquery-file-upload-middleware');
 
-var MongoClient = require('mongodb').MongoClient;
-var rest = require('gleaner-data').rest;
+// Set database
+
+var dbProvider = {
+    db: function () {
+        return this.database;
+    }
+};
+
+var connectToDB = function () {
+    var MongoClient = require('mongodb').MongoClient;
+    var connectionString = 'mongodb://' + conf.mongoHost + ':' + conf.mongoPort + '/' + conf.mongoDatabase;
+    MongoClient.connect(connectionString, function (err, db) {
+        if (err) {
+            console.log(err);
+            console.log('Impossible to connect to Mongo. Retrying in 5s');
+            setTimeout(connectToDB, 5000);
+        } else {
+            console.log('Successfully connected to Mongo.')
+            dbProvider.database = db;
+        }
+    });
+};
+
+connectToDB();
+
+require('gleaner-data').db.setDBProvider(dbProvider);
+
+// Traces consumers
+
+var traces = require('gleaner-data').traces;
+traces.addConsumer(require('./lib/consumers/mongo'));
+traces.addConsumer(require('./lib/consumers/kafka'));
+
+// Sessions tasks
+
+var sessions = require('gleaner-data').sessions;
+sessions.startTasks.push(require('./lib/services/kafka').createTopic);
+sessions.endTasks.push(require('./lib/services/kafka').removeTopic);
+
+sessions.startTasks.push(require('./lib/services/storm').startTopology);
+sessions.endTasks.push(require('./lib/services/storm').endTopology);
+// Build app
 
 var app = express();
 
@@ -21,19 +61,21 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/views');
 
+// Set router paths
+
 var options = {
+    passwordsSalt: conf.passwordsSalt,
     apiRoot: '/api/',
     collectorRoot: '/collect/',
-    passwordsSalt: conf.passwordsSalt,
     loginPath: '/login',
     redirectLogin: '/app'
 };
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.redirect(options.redirectLogin);
 });
 
-app.get(options.loginPath, function(req, res) {
+app.get(options.loginPath, function (req, res) {
     if (req.session.role) {
         res.redirect(options.redirectLogin);
     } else {
@@ -43,8 +85,8 @@ app.get(options.loginPath, function(req, res) {
     }
 });
 
-var redirect = function(req, res, next) {
-    if (req.session.role) {
+var redirect = function (req, res, next) {
+    if (conf.test || req.session.role) {
         next();
     } else {
         res.redirect(options.loginPath);
@@ -54,34 +96,40 @@ var redirect = function(req, res, next) {
 app.all(options.apiRoot + '*', redirect);
 app.all(options.redirectLogin + '*', redirect);
 
-app.get(options.redirectLogin, function(req, res) {
+app.get(options.redirectLogin, function (req, res) {
     res.render('index');
 });
 
-app.get(options.redirectLogin + '/home', function(req, res) {
+app.get(options.redirectLogin + '/home', function (req, res) {
     res.render('home');
 });
 
-app.get(options.redirectLogin + '/data', function(req, res) {
+app.get(options.redirectLogin + '/data', function (req, res) {
     res.render('data');
 });
 
-app.get(options.redirectLogin + '/realtime', function(req, res) {
+app.get(options.redirectLogin + '/realtime', function (req, res) {
     res.render('realtime');
 });
 
-app.get(options.redirectLogin + '/reports', function(req, res) {
+app.get(options.redirectLogin + '/reports', function (req, res) {
     res.render('reports');
 });
 
-app.get(options.redirectLogin + '/activity', function(req, res) {
+app.get(options.redirectLogin + '/activity', function (req, res) {
     res.render('activity');
 });
 
-app.get('/logout', function(req, res) {
+app.get('/logout', function (req, res) {
     delete req.session.role;
     delete req.session.name;
     res.render('login');
+});
+
+
+// Real time
+app.get('/rt', function(req, res){
+   res.render('realtime/index');
 });
 
 // Uploads
@@ -103,11 +151,11 @@ app.post('/api/analyze/:versionId', require('./lib/version-analysis').analyze);
 
 var fs = require('fs');
 
-app.get('/app/uploads/*', function(req, res) {
+app.get('/app/uploads/*', function (req, res) {
     var file = process.cwd() + '/uploads/' + req.params[0];
-    fs.exists(file, function(exists) {
+    fs.exists(file, function (exists) {
         if (exists) {
-            fs.readFile(file, function(err, img) {
+            fs.readFile(file, function (err, img) {
                 if (err) {
                     res.send(500);
                 } else {
@@ -124,17 +172,15 @@ app.get('/app/uploads/*', function(req, res) {
         }
     });
 });
-var connectionString = 'mongodb://' + conf.mongoHost + ':' + conf.mongoPort + '/' + conf.mongoDatabase;
-MongoClient.connect(connectionString, function(err, db) {
-    if (err) {
-        console.log(err);
-    } else {
-        rest(db, app, options);
-        app.all('*', function(req, res) {
-            res.redirect(options.redirectLogin);
-        });
-        app.listen(conf.port, function() {
-            console.log('Listening in ' + conf.port);
-        });
-    }
+
+var rest = require('gleaner-data').rest;
+rest(app, options);
+
+app.all('*', function (req, res) {
+    res.redirect(options.redirectLogin);
 });
+
+app.listen(conf.port, function () {
+    console.log('Listening in ' + conf.port);
+});
+

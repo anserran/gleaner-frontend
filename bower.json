@@ -16,6 +16,8 @@
         "jquery-file-upload": "*",
         "jquery-query": "https://raw.githubusercontent.com/alrusdi/jquery-plugin-query-object/master/jquery.query-object.js",
         "underscore": "http://underscorejs.org/underscore.js",
-        "d3": "*"
+        "d3": "*",
+        "gauss": "*",
+        "hammerjs": "*"
     }
 }

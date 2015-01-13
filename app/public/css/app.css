@@ -171,6 +171,9 @@ li.segment span.nav-span:hover {
 .bottom50 {
 	margin-bottom: 50px;
 }
+.overflow-hidden {
+	overflow: hidden;
+}
 
 
 .pad15 {
@@ -179,6 +182,14 @@ li.segment span.nav-span:hover {
 
 .loading {
 	display: none;
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+
+.height100 {
+	height: 100%
 }
 
 #reports li {

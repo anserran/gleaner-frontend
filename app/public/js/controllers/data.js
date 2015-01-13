@@ -1,35 +1,35 @@
 angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
     .controller('DataCtrl', ['$scope', '$location', '$window', 'Versions',
-        function($scope, $location, $window, Versions) {
-            $scope.deleteGame = function() {
+        function ($scope, $location, $window, Versions) {
+            $scope.deleteGame = function () {
                 if ($scope.selectedGame) {
-                    $scope.selectedGame.$remove(function() {
+                    $scope.selectedGame.$remove(function () {
                         $window.location = "/app";
                     });
                 }
             };
 
-            $scope.addEmptyVersion = function() {
+            $scope.addEmptyVersion = function () {
                 if ($scope.selectedGame) {
                     var version = new Versions();
                     version.name = 'Untitled version';
                     version.gameId = $scope.selectedGame._id;
-                    version.$save(function() {
+                    version.$save(function () {
                         $location.search('version', version._id);
                         $scope.refreshVersions();
                     });
                 }
             };
 
-            $scope.deleteVersion = function() {
+            $scope.deleteVersion = function () {
                 if ($scope.selectedVersion) {
-                    $scope.selectedVersion.$remove(function() {
+                    $scope.selectedVersion.$remove(function () {
                         $scope.refreshVersions();
                     });
                 }
             };
 
-            $scope.updateZones = function($data) {
+            $scope.updateZones = function ($data) {
                 try {
                     $scope.selectedVersion.zones = JSON.parse($data);
                     $scope.selectedVersion.$save();
@@ -39,7 +39,7 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 }
             };
 
-            $scope.$watch('selectedVersion', function() {
+            $scope.$watch('selectedVersion', function () {
                 if ($scope.selectedVersion) {
                     $scope.editedZones = JSON.stringify($scope.selectedVersion.zones, undefined, 4);
                     $scope.zoneNames = [];
@@ -50,53 +50,72 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 }
             });
 
-            var updateZonesGraph = function() {
+            var updateZonesGraph = function () {
                 Gleaner.zonesgraph('#zones-graph', $scope.selectedVersion.zones, '/app/');
             };
 
-            $scope.addDerivedVar = function() {
-                if ($scope.selectedVersion) {
-                    if (!$scope.selectedVersion.derivedVars) {
-                        $scope.selectedVersion.derivedVars = [];
-                    }
-                    $scope.selectedVersion.derivedVars.push({
+            $scope.addDerivedVar = function () {
+                $scope.addToList('derivedVars', {
                         name: 'new_var',
                         value: 0
-                    });
+                });
+            };
+
+            $scope.addWarning = function(){
+                $scope.addToList('warnings', {
+                    cond: 'false',
+                    message: 'No message'
+                });
+            };
+
+            $scope.addAlert = function(){
+                $scope.addToList('alerts', {
+                    expression: '0',
+                    maxDiff: 0,
+                    message: 'No message'
+                });
+            };
+
+            $scope.addToList = function (list, object) {
+                if ($scope.selectedVersion) {
+                    if (!$scope.selectedVersion[list]) {
+                        $scope.selectedVersion[list] = [];
+                    }
+                    $scope.selectedVersion[list].push(object);
                     $scope.selectedVersion.$save();
                 }
             };
 
-            $scope.deleteDerivedVar = function(variable) {
-                var index = $scope.selectedVersion.derivedVars.indexOf(variable);
+            $scope.deleteFromList = function(list, object){
+                var index = $scope.selectedVersion[list].indexOf(object);
                 if (index > -1) {
-                    $scope.selectedVersion.derivedVars.splice(index, 1);
+                    $scope.selectedVersion[list].splice(index, 1);
                 }
                 $scope.selectedVersion.$save();
             };
 
 
-            $(function() {
+            $(function () {
                 $('#fileupload').fileupload({
                     dataType: 'json',
                     acceptFileTypes: /(\.|\/)(zip|ead)$/i,
-                    start: function(e) {
+                    start: function (e) {
                         $scope.eadLoading = true;
                     },
-                    done: function(e, data) {
+                    done: function (e, data) {
                         $scope.selectedVersion.loading = true;
-                        $scope.selectedVersion.$save(function() {
+                        $scope.selectedVersion.$save(function () {
                             $.post('/app/extractdata/', {
                                 file: data.files[0].name,
                                 versionId: $scope.selectedVersion._id
-                            }, function() {
+                            }, function () {
                                 $('#analysis-state').text('Extracting data from .ead...');
                                 checkVersionLoaded($scope.selectedVersion);
                             });
 
                         });
                     },
-                    progressall: function(e, data) {
+                    progressall: function (e, data) {
                         var progress = parseInt(data.loaded / data.total * 100, 10);
                         $('#analysis-state').text('Loading ' + progress + ' %');
                     }
@@ -105,9 +124,9 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
             });
 
 
-            var checkVersionLoaded = function(version) {
-                var check = function() {
-                    version.$get(function() {
+            var checkVersionLoaded = function (version) {
+                var check = function () {
+                    version.$get(function () {
                         if (version.loading) {
                             setTimeout(check, 1000);
                         } else {
@@ -119,7 +138,7 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
             };
 
             // Segments
-            $scope.addSegment = function() {
+            $scope.addSegment = function () {
                 if (!$scope.selectedVersion.segments) {
                     $scope.selectedVersion.segments = [];
                 }
@@ -132,7 +151,7 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 $scope.saveVersion();
             };
 
-            $scope.deleteSegment = function(segment) {
+            $scope.deleteSegment = function (segment) {
                 var index = $scope.selectedVersion.segments.indexOf(segment);
                 if (index > -1) {
                     $scope.selectedVersion.segments.splice(index, 1);
@@ -140,7 +159,7 @@ angular.module('dataApp', ['gleanerServices', 'gleanerApp', 'checklist-model'])
                 $scope.selectedVersion.$save();
             };
 
-            $scope.updateHaving = function(segment) {
+            $scope.updateHaving = function (segment) {
                 if (!segment.groupby && segment.hasOwnProperty('having')) {
                     delete segment.having;
                 }
