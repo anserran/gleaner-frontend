@@ -94,7 +94,7 @@ app.controller('SessionCtrl', ['$scope', '$location', 'Sessions', 'Results', 'Ve
                 }
 
                 result.alerts = [];
-                for (i = 0; i < $scope.version.alerts && $scope.version.alerts.length; i++) {
+                for (i = 0; $scope.version.alerts && i < $scope.version.alerts.length; i++) {
                     var alert = $scope.version.alerts[i];
                     var level = evalExpression.call(result, alert.value, 0);
                     if (level - ((result.levels && result.levels[i]) || 0 ) > alert.maxDiff) {
@@ -115,7 +115,7 @@ app.controller('SessionCtrl', ['$scope', '$location', 'Sessions', 'Results', 'Ve
                 }
                 results.push(result);
 
-                if ($scope.player && scope.player._id === result._id) {
+                if ($scope.player && $scope.player._id === result._id) {
                     $scope.player = result;
                 }
 
