@@ -97,7 +97,7 @@ app.controller('SessionCtrl', ['$scope', '$location', 'Sessions', 'Results', 'Ve
                 for (i = 0; $scope.version.alerts && i < $scope.version.alerts.length; i++) {
                     var alert = $scope.version.alerts[i];
                     var level = evalExpression.call(result, alert.value, 0);
-                    if (level - ((result.levels && result.levels[i]) || 0 ) > alert.maxDiff) {
+                    if (level - ((result.levels && result.levels[i]) || 0 ) >= alert.maxDiff) {
                         result.alerts.push({
                             id: i,
                             level: level
