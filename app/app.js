@@ -150,9 +150,14 @@ app.post('/api/analyze/:versionId', require('./lib/version-analysis').analyze);
 
 var Collection = require('easy-collections');
 // FIXME
-app.get('/api/traces/:versionId', function (req, res) {
+app.get('/api/traces/:versionId/:lastId', function (req, res) {
     var traces = new Collection(dbProvider.db(), 'traces_' + req.params.versionId);
-    traces.find().then(function (result) {
+    var query = {};
+    if (req.params.lastId && req.params.lastId !== '0') {
+        query._id =
+        {$gt: traces.toObjectID(req.params.lastId)};
+    }
+    traces.find(query).then(function (result) {
         res.json(result);
     }).fail(function () {
         res.status(400).end();
