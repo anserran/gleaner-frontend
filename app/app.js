@@ -128,8 +128,8 @@ app.get('/logout', function (req, res) {
 
 
 // Real time
-app.get('/rt', function(req, res){
-   res.render('realtime/index');
+app.get('/rt', function (req, res) {
+    res.render('realtime/index');
 });
 
 // Uploads
@@ -148,6 +148,16 @@ app.post('/app/extractdata', eadAnalyzer.processReq);
 // Start analysis
 app.post('/api/analyze/:versionId', require('./lib/version-analysis').analyze);
 
+var Collection = require('easy-collections');
+// FIXME
+app.get('/api/traces/:versionId', function (req, res) {
+    var traces = new Collection(dbProvider.db(), 'traces_' + req.params.versionId);
+    traces.find().then(function (result) {
+        res.json(result);
+    }).fail(function () {
+        res.status(400).end();
+    });
+});
 
 var fs = require('fs');
 
