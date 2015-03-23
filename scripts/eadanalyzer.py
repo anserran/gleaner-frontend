@@ -195,7 +195,7 @@ def process(id, node, count):
 count = process(scenes['root'], root, 0)
 
 for node in nodes:
-    try
+    try:
         count = process(node, nodes[node], count + 1)
     except KeyError:
         pass
