@@ -188,7 +188,10 @@ def process(id, node, count):
         node['y'] = count % max_y
         processed.append(id)
         for link in node['links']:
-            count = process(link, nodes[link], count + 1)
+            try:
+                count = process(link, nodes[link], count + 1)
+            except KeyError:
+                pass
         return count
 
 
