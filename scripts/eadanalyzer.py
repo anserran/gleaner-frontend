@@ -195,7 +195,10 @@ def process(id, node, count):
 count = process(scenes['root'], root, 0)
 
 for node in nodes:
-    count = process(node, nodes[node], count + 1)
+    try
+        count = process(node, nodes[node], count + 1)
+    except KeyError:
+        pass
 
 # Create choices
 choices = []
